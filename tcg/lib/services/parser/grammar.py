@@ -13,14 +13,14 @@ TEXT_LINE: pp.ParserElement = pp.Forward()
 NUMBER = pp.Regex(r"[0-9]+")
 WORD = pp.Word(pp.alphanums + ".'\": ")
 CARDNAME = pp.Literal("~").set_parse_action(lambda _: "{name}")
-ARROW = pp.Literal("->").set_parse_action(lambda _: "→")
-NEWLINE = pp.Literal("|").set_parse_action(lambda _: "\n")
+# ARROW = pp.Literal("->").set_parse_action(lambda _: "→")
+NEWLINE = pp.Literal("|").set_parse_action(lambda _: "<br>")
 
 # Mana
 MANA_COLOR = pp.oneOf("D A O P L")
 MANA_COST = "(" + NUMBER.set_results_name("value") + pp.OneOrMore(MANA_COLOR).set_results_name("colors") + ")"
-MANA_COST_IN_TEXT = MANA_COST.set_parse_action(ManaCostReplacer())
-MANA_COST_IN_COST = MANA_COST.set_parse_action(ManaCostReplacer(output_dict=True))
+MANA_COST_IN_TEXT = MANA_COST.copy().set_parse_action(ManaCostReplacer())
+MANA_COST_IN_COST = MANA_COST.copy().set_parse_action(ManaCostReplacer(output_dict=True))
 
 # Keywords
 TEXT_LIST = pp.delimited_list(pp.Combine(TEXT_LINE)).set_results_name("args")
@@ -43,6 +43,6 @@ TRIGGERED = (pp.Literal("[[") + TEXT_LINE.set_results_name("text") + pp.Literal(
 # Lists
 BULLET_LIST = (pp.Literal(">l(") + pp.Optional(TEXT_LIST) + ")").set_parse_action(ListReplacer())
 
-ATOM = BULLET_LIST | KEYWORD | ARROW | MANA_COST | ACTIVATED | TRIGGERED | CARDNAME | WORD
+ATOM = BULLET_LIST | KEYWORD | MANA_COST_IN_TEXT | ACTIVATED | TRIGGERED | CARDNAME | WORD
 TEXT_LINE <<= pp.Combine(pp.OneOrMore(ATOM))
 TEXT <<= TEXT_LINE + pp.ZeroOrMore(NEWLINE + TEXT_LINE)

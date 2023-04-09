@@ -8,6 +8,11 @@ $card-border-color: $color-black;
 $card-border-radius: 2mm;
 $card-frame-inset: 1.5mm;
 
+// Standard measures
+$font-size-smaller: 2.5mm;
+$font-size: 4mm;
+$font-size-larger: 7mm;
+
 .card {
     width: $card-width;
     height: $card-height;
@@ -15,7 +20,7 @@ $card-frame-inset: 1.5mm;
     background-color: $card-border-color;
     box-sizing: border-box;
     position: relative;
-    font-size: 16px;
+    font-size: $font-size;
     font-family: sans-serif;
 }
 
@@ -70,6 +75,18 @@ $card-frame-inset: 1.5mm;
     }
 }
 
+@mixin stroke($color: #000, $size: 1px) {
+    text-shadow:
+      -#{$size} -#{$size} 0 $color,
+       0        -#{$size} 0 $color,
+       #{$size} -#{$size} 0 $color,
+       #{$size}  0        0 $color,
+       #{$size}  #{$size} 0 $color,
+       0         #{$size} 0 $color,
+      -#{$size}  #{$size} 0 $color,
+      -#{$size}  0        0 $color;
+}
+
 .card-frame {
     background-color: white;
     position: absolute;
@@ -85,16 +102,25 @@ $card-frame-inset: 1.5mm;
 .mana {
     display: inline-block;
     border-radius: 50%;
-    width: 20px;
-    height:  20px;
     text-align: center;
     vertical-align: middle;
     color: white;
-    line-height: 20px;
     // padding: 5px;
     position: relative;
     // border: 1px solid black;
-    z-index: 10;
+    // z-index: 10;
+    width: $font-size;
+    height: $font-size;
+    line-height: $font-size;
+    font-size: $font-size;
+    vertical-align: text-top;
+}
+
+.cost-box .mana, .channel-box .mana {
+    width: $font-size-larger;
+    height: $font-size-larger;
+    line-height: $font-size-larger;
+    font-size: $font-size-larger;
 }
 
 .mana-background {
@@ -116,20 +142,90 @@ $card-frame-inset: 1.5mm;
     }
 }
 
-
-@mixin stroke($color: #000, $size: 1px) {
-    text-shadow:
-      -#{$size} -#{$size} 0 $color,
-       0        -#{$size} 0 $color,
-       #{$size} -#{$size} 0 $color,
-       #{$size}  0        0 $color,
-       #{$size}  #{$size} 0 $color,
-       0         #{$size} 0 $color,
-      -#{$size}  #{$size} 0 $color,
-      -#{$size}  0        0 $color;
-}
-
 .mana-value {
     position: relative;
     @include stroke();
+}
+
+.channel-box {
+    transform: rotate(180deg) translate(50%, 0%);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+}
+
+.main-box {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: $font-size-larger / 2;
+    margin: 1.5mm 2.5mm;
+}
+
+.top-box {
+    text-align: center;
+    margin-bottom: 1mm;
+}
+
+.cost-box {
+    position: absolute;
+}
+
+.tag-box {
+    font-size: $font-size-smaller;
+}
+
+.art-box {
+    aspect-ratio: 4 / 3;
+    background-color: white;
+}
+
+.text-box {
+    line-height: $font-size;
+    background-color: rgba(255, 255, 255, 0.75);
+    flex-grow: 1;
+    padding: 1mm;
+}
+
+.power-box {
+    color: white;
+    // background-color: black;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 0 2.5mm;
+    font-size: $font-size-larger;
+
+    @include stroke();
+}
+
+// Other elements
+.keyword-display {
+    font-weight: bold;
+}
+
+.keyword-reminder {
+    font-style: italic;
+}
+
+.ability-trigger {
+    background-color: rgb(102, 181, 255);
+    padding: 0 1.5mm 0 2.5mm;
+    // clip-path: polygon(2mm 50%, 0 0, calc(100% - 2mm) 0, 100% 50%, calc(100% - 2mm) 100%, 0 100%);
+
+    &::after {
+        content: " :";
+    }
+}
+.ability-activation-cost {
+    background-color: rgb(102, 255, 140);
+    padding: 0 1.5mm 0 2.5mm;
+    clip-path: polygon(2mm 50%, 0 0, calc(100% - 2mm) 0, 100% 50%, calc(100% - 2mm) 100%, 0 100%);
+
+    &::after {
+        content: "►";
+    }
 }

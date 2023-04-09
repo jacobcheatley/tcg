@@ -10,7 +10,9 @@ class CardConstructor:
 
     def _row_to_dict(self, row: dict) -> dict:
         cost = self._prefix_dict("cost_", self.parser.parse_cost(row["cost"])[0])
-        return {**row, **cost, "text": self.parser.parse_text(row["text"]).format(**row)}
+        text = self.parser.parse_text(row["text"]).format(**row)
+        channel_cost_element = f"<span class='mana {cost['cost_color_classes']}'><div class='mana-background {cost['cost_color_classes']}'></div><span class='mana-value'>1</span></span>"
+        return {**row, **cost, "text": text, "channel_cost_element": channel_cost_element}
 
     def construct_cards(self, cards: list[dict]):
         return [self._row_to_dict(card) for card in cards]

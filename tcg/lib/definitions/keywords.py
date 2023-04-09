@@ -4,7 +4,7 @@ KEYWORDS = {
     "blocker": KeywordDefinition(
         "blocker",
         "🛡️ Blocker",
-        "<<tap>> -> Change the target of an enemy attack from an adjacent creature or you to this creature.",
+        "<span class='ability-activation-cost'>tap</span> Change the target of an enemy attack from an adjacent creature or you to this creature.",
     ),
     "tribute": KeywordDefinition(
         "tribute",

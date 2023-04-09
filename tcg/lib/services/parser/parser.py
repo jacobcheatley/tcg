@@ -8,8 +8,6 @@ class Parser:
 
     def parse_text(self, text: str) -> str:
         parsed = self._text_grammar.parse_string(text)
-        # print(parsed)
-        # print("===>")
         return "".join(parsed)
 
     def parse_cost(self, cost: str) -> dict:
