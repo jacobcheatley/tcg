@@ -1,0 +1,17 @@
+{% from "macros/card.html" import card with context %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sheet.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/card.css') }}">
+    </head>
+    <body>
+        <div class="sheet">
+            {% for data in card_data %}
+                {{ card(data) }}
+            {% endfor %}
+        </div>
+    </body>
+</html>

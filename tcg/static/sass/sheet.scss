@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+}
+
+.sheet {
+    font-size: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0;
+}
+
+@media print {
+    .card {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}

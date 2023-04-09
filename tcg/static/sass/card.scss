@@ -1,0 +1,135 @@
+@import 'imports/colors.scss';
+@import 'imports/fonts.scss';
+
+// Card Dimensions
+$card-width: 63mm;
+$card-height: 88mm;
+$card-border-color: $color-black;
+$card-border-radius: 2mm;
+$card-frame-inset: 1.5mm;
+
+.card {
+    width: $card-width;
+    height: $card-height;
+    border-radius: $card-border-radius;
+    background-color: $card-border-color;
+    box-sizing: border-box;
+    position: relative;
+    font-size: 16px;
+    font-family: sans-serif;
+}
+
+@mixin color_bg {
+    $mana-class-names: ('divine' 'arcane' 'occult' 'primal' 'alchemy');
+    $mana-colors: ($color-divine $color-arcane $color-occult $color-primal $color-alchemy);
+
+    @for $i from 1 through length($mana-class-names) {
+        $name-i: nth($mana-class-names, $i);
+        $color-i: nth($mana-colors, $i);
+        @for $j from $i through length($mana-class-names) {
+            @if ($i != $j) {
+                $name-j: nth($mana-class-names, $j);
+                $color-j: nth($mana-colors, $j);
+                &.mana-#{$name-i}.mana-#{$name-j} {
+                    background: linear-gradient(90deg, $color-i, $color-j);
+                }
+            } @else {
+                &.mana-#{$name-i} {
+                    background: linear-gradient(90deg, $color-i, $color-i);
+                }
+            }
+        }
+    }
+}
+
+@mixin color_mana_icon {
+    $mana-class-names: ('divine' 'arcane' 'occult' 'primal' 'alchemy');
+    $mana-colors: ($color-divine $color-arcane $color-occult $color-primal $color-alchemy);
+    // $mana-svg: ("/static/svg/mana/divine.svg" "/static/svg/mana/arcane.svg" "/static/svg/mana/occult.svg" "/static/svg/mana/primal.svg" "/static/svg/mana/alchemy.svg");
+
+    @for $i from 1 through length($mana-class-names) {
+        $name-i: nth($mana-class-names, $i);
+        $color-i: nth($mana-colors, $i);
+        @for $j from $i through length($mana-class-names) {
+            @if ($i != $j) {
+                $name-j: nth($mana-class-names, $j);
+                $color-j: nth($mana-colors, $j);
+                &.mana-#{$name-i}.mana-#{$name-j} {
+                    background: url("/static/svg/mana/#{$name-i}.svg");
+                    &::after {
+                        background: url("/static/svg/mana/#{$name-j}.svg");
+                        clip-path: inset(0 0 0 50%);
+                    }
+                }
+            } @else {
+                &.mana-#{$name-i} {
+                    background: url("/static/svg/mana/#{$name-i}.svg");
+                }
+            }
+        }
+    }
+}
+
+.card-frame {
+    background-color: white;
+    position: absolute;
+    left: $card-frame-inset;
+    right: $card-frame-inset;
+    top: $card-frame-inset;
+    bottom: $card-frame-inset;
+    border-radius: $card-frame-inset;
+
+    @include color_bg();
+}
+
+.mana {
+    display: inline-block;
+    border-radius: 50%;
+    width: 20px;
+    height:  20px;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    line-height: 20px;
+    // padding: 5px;
+    position: relative;
+    // border: 1px solid black;
+    z-index: 10;
+}
+
+.mana-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include color_mana_icon();
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: contain;
+    }
+}
+
+
+@mixin stroke($color: #000, $size: 1px) {
+    text-shadow:
+      -#{$size} -#{$size} 0 $color,
+       0        -#{$size} 0 $color,
+       #{$size} -#{$size} 0 $color,
+       #{$size}  0        0 $color,
+       #{$size}  #{$size} 0 $color,
+       0         #{$size} 0 $color,
+      -#{$size}  #{$size} 0 $color,
+      -#{$size}  0        0 $color;
+}
+
+.mana-value {
+    position: relative;
+    @include stroke();
+}

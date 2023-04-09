@@ -1,0 +1,48 @@
+// Fonts
+// https://docs.google.com/document/d/1j0ZhSZ7NFY_Yo1Ak1nnL1cwdzVrOOyXHkGPnBxYPsxg/edit#heading=h.xd9yah14rjnp
+// Legible
+$font-alegreya: 'Alegreya';
+$font-alegreya-sc: 'Alegreya SC';
+$font-bahnschrift: 'Bahnschrift';
+$font-burvetica-nc: 'Burvetica NC';
+$font-burvetica-thick-nc: 'Burvetica Thick NC';
+$font-calling-code: 'Calling Code';
+$font-courier-prime: 'Courier Prime';
+$font-inconsolata: 'Inconsolata';
+$font-jsl-ancient: 'JSL Ancient';
+$font-old-newspaper-types: 'OldNewspaperTypes';
+
+// Display
+$font-adhesive-nr-seven: 'Adhesive Nr Seven';
+$font-blackletter-hplhs: 'Blackletter HPLHS';
+$font-chomsky: 'Chomsky';
+// $font-gothicus: '';
+$font-mon-amour-fraktur-broken: 'MonAmourFraktur-Broken';
+$font-old-englished-boots: 'Old_Englished_Boots';
+$font-jsl-blackletter: 'JSL Blackletter';
+// $font-fakir-display: ''; 
+// $font-mohica: '';
+$font-fette-trump-deutsch: 'Fette Trump-Deutsch';
+$font-lux-contra-tenebras: 'Lux Contra Tenebras';
+
+$fonts-list: (
+    $font-alegreya
+    $font-alegreya-sc
+    $font-bahnschrift
+    $font-burvetica-nc
+    $font-burvetica-thick-nc
+    $font-calling-code
+    $font-courier-prime
+    $font-inconsolata
+    $font-jsl-ancient
+    $font-old-newspaper-types
+
+    $font-adhesive-nr-seven
+    $font-blackletter-hplhs
+    $font-chomsky
+    $font-mon-amour-fraktur-broken
+    $font-old-englished-boots
+    $font-jsl-blackletter
+    $font-fette-trump-deutsch
+    $font-lux-contra-tenebras
+);

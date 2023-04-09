@@ -1,0 +1,58 @@
+@use "sass:map";
+@import "imports/fonts.scss";
+@import "imports/colors.scss";
+
+@each $current-font in $fonts-list {
+    $i: index($fonts-list, $current-font);
+    .font-test:nth-child(#{$i}) {
+        .child-font-test::after {
+            content: $current-font;
+            font-family: $current-font;
+        }
+    }
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.full-test {
+    display: flex;
+}
+
+.color-test {
+    padding: 16px;
+}
+
+.child-font-test {
+    margin: 16px;
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    line-height: 1.5em;
+}
+
+.child-font-test-small {
+    font-size: 8px;
+}
+.child-font-test-medium {
+    font-size: 16px;
+}
+.child-font-test-large {
+    font-size: 24px;
+}
+.child-font-test-extra-large {
+    font-size: 48px;
+}
+
+@each $color-scheme-name, $color-scheme in $color-schemes {
+    $i: index($color-schemes, $color-scheme-name $color-scheme);
+    .color-test-#{$i} {
+        background-color: map-get($color-scheme, "background");
+
+        .text {
+            color: map-get($color-scheme, "text");
+            background-color: map-get($color-scheme, "accent");
+        }
+    }
+}
