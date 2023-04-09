@@ -1,20 +1,20 @@
 {% macro card(data) -%}
     <div class="card">
-        <div class="card-frame {{ data['cost_color_classes'] }}">
+        <div class="card-frame {{ data['cost__names'] }}">
             <div class="main-box">
                 <div class="top-box">
-                    <div class="cost-box">{{ data['cost_element'] | safe }}</div>
-                    <div class="name-box">{{ data['name'] | safe }}</div>
-                    <div class="tag-box">{{ data['tags'] | safe }}</div>
+                    <div class="cost-box">{{ data['card__cost'] | safe }}</div>
+                    <div class="name-box">{{ data['card__name'] | safe }}</div>
+                    <div class="tag-box">{{ data['card__tags'] | safe }}</div>
                 </div>
                 <div class="art-box">
                 </div>
                 <div class="text-box">
-                    {{ data['text'] | safe }}
+                    {{ data['card__text'] | safe }}
                 </div>
             </div>
-            <div class="power-box">{{ data['power'] }}</div>
-            <div class="channel-box">{{ data['channel_cost_element'] | safe }}</div>
+            <div class="power-box">{{ data['card__power'] }}</div>
+            <div class="channel-box">{{ data['card__channel_cost'] | safe }}</div>
         </div>
     </div>
 {%- endmacro %}

@@ -1,6 +1,19 @@
 from flask import Flask, render_template
-from lib.services import CardConstructor, Parser
 from sassutils.wsgi import Manifest, SassMiddleware
+
+from tcg.lib.services import CardPipeline, GoogleSheetsReader
+from tcg.lib.types import KeywordDefinition
+
+
+def card_data():
+    sheet_reader = GoogleSheetsReader("1qmsOTAWI75Hs6wtkR6oK58nxVS0uEjHigd1mwyo7714")
+    keywords_df = sheet_reader.read("keywords")
+    keyword_definitions = KeywordDefinition.list_from_dataframe(keywords_df)
+    cards = sheet_reader.read("cards").to_dict(orient="records")
+    pipeline = CardPipeline(keyword_definitions=keyword_definitions)
+
+    return pipeline.run_multiple(cards)
+
 
 app = Flask(__name__)
 app.wsgi_app = SassMiddleware(
@@ -8,120 +21,10 @@ app.wsgi_app = SassMiddleware(
     {"tcg": Manifest(sass_path="static/sass", css_path="static/css", wsgi_path="/static/css", strip_extension=True)},
 )
 
-card_data = CardConstructor(Parser()).construct_cards(
-    [
-        {
-            "name": "A custom name",
-            "text": "~|other text|[[enter]] add  (2D) or something|<<another line>> wow|>kr.blocker()",
-            "cost": "(2DA)",
-            "tags": "Beast Human AnotherTag",
-            "power": 3,
-        },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2DO)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2DP)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2DL)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2AO)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2AP)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2AL)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2OP)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2OL)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2PL)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2D)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2A)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2O)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2P)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-        # {
-        #     "name": "A custom name",
-        #     "text": "~|other text|[[enter]] add (2D)|<<another line>> wow",
-        #     "cost": "(2L)",
-        #     "tags": "Beast Human AnotherTag",
-        #     "power": 3,
-        # },
-    ]
-)
-
 
 @app.route("/")
 def index():
-    return render_template("index.html", card_data=card_data)
+    return render_template("index.html", card_data=card_data())
 
 
 if __name__ == "__main__":

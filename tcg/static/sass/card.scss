@@ -35,11 +35,11 @@ $font-size-larger: 7mm;
             @if ($i != $j) {
                 $name-j: nth($mana-class-names, $j);
                 $color-j: nth($mana-colors, $j);
-                &.mana-#{$name-i}.mana-#{$name-j} {
+                &.#{$name-i}.#{$name-j} {
                     background: linear-gradient(90deg, $color-i, $color-j);
                 }
             } @else {
-                &.mana-#{$name-i} {
+                &.#{$name-i} {
                     background: linear-gradient(90deg, $color-i, $color-i);
                 }
             }
@@ -59,7 +59,7 @@ $font-size-larger: 7mm;
             @if ($i != $j) {
                 $name-j: nth($mana-class-names, $j);
                 $color-j: nth($mana-colors, $j);
-                &.mana-#{$name-i}.mana-#{$name-j} {
+                &.#{$name-i}.#{$name-j} {
                     background: url("/static/svg/mana/#{$name-i}.svg");
                     &::after {
                         background: url("/static/svg/mana/#{$name-j}.svg");
@@ -67,7 +67,7 @@ $font-size-larger: 7mm;
                     }
                 }
             } @else {
-                &.mana-#{$name-i} {
+                &.#{$name-i} {
                     background: url("/static/svg/mana/#{$name-i}.svg");
                 }
             }
