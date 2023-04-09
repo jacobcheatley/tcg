@@ -6,6 +6,8 @@ from lib.services.parser.replacer import (
     ManaCostReplacer,
 )
 
+from tcg.lib.definitions import KEYWORDS
+
 TEXT: pp.ParserElement = pp.Forward()
 TEXT_LINE: pp.ParserElement = pp.Forward()
 
@@ -30,7 +32,7 @@ KEYWORD_IDENTIFIER = (
     + "."
     + pp.Regex(r"[a-z]+").set_results_name("name")
 )
-KEYWORD = (KEYWORD_IDENTIFIER + "(" + pp.Optional(TEXT_LIST) + ")").set_parse_action(KeywordReplacer())
+KEYWORD = (KEYWORD_IDENTIFIER + "(" + pp.Optional(TEXT_LIST) + ")").set_parse_action(KeywordReplacer(KEYWORDS, TEXT))
 
 # Abilities
 ACTIVATED = (pp.Literal("<<") + TEXT_LINE.set_results_name("text") + pp.Literal(">>")).set_parse_action(

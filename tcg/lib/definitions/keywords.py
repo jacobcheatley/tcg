@@ -1,16 +1,17 @@
 from lib.types import KeywordDefinition
 
-KEYWORDS = {
-    "blocker": KeywordDefinition(
+KEYWORDS = [
+    KeywordDefinition(
         "blocker",
         "🛡️ Blocker",
-        "<span class='ability-activation-cost'>tap</span> Change the target of an enemy attack from an adjacent creature or you to this creature.",
+        "<<tap>> Change the target of an enemy attack from an adjacent creature or you to this creature.",
     ),
-    "tribute": KeywordDefinition(
+    KeywordDefinition(
         "tribute",
-        "Tribute - {args[0]}",
+        "Tribute - {arg0}",
         "To cast this spell you must pay its tribute cost in addition to its normal costs.",
     ),
-    "harvest": KeywordDefinition("harvest", "Harvest - {args[0]}", "Get this effect when used as an Ingredient."),
-    "first": KeywordDefinition("first", "First {args[0]}", "And the reminder uses the second {args[1]}"),
-}
+    KeywordDefinition("harvest", "Harvest - {arg0}", "Get this effect when used as an Ingredient."),
+    KeywordDefinition("first", "First {arg0}", "And the reminder uses the second {arg1}"),
+    KeywordDefinition("complicated", "Complicated {arg0}", "{cost__names} ~"),
+]

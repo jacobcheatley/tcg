@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import pyparsing as pp
-from lib.definitions import KEYWORDS, MANA_CLASSES
+from lib.definitions import MANA_CLASSES
+from lib.types import KeywordDefinition
 
 
 class Replacer(ABC):
@@ -39,14 +40,18 @@ class ManaCostReplacer(Replacer):
 
 
 class KeywordReplacer(Replacer):
+    def __init__(self, keyword_definitions: list[KeywordDefinition], parser: pp.ParserElement) -> None:
+        super().__init__()
+        self.keyword_mapper = {definition.name: definition for definition in keyword_definitions}
+        self.parser = parser
+
     def _replace(self, *, name: str, reminder: bool, args: list[str] = None) -> pp.ParserElement:
         print("KEYWORD REPLACE")
-        keyword_definition = KEYWORDS[name]
+        keyword_definition = self.keyword_mapper[name]
         display_text = f"<span class='keyword-display'>{keyword_definition.display.format(args=args)}</span>"
+        reminder_text = "".join(self.parser.parse_string(keyword_definition.reminder))
         reminder_text = (
-            f" <span class='keyword-reminder'>({keyword_definition.reminder.format(args=args)})</span>"
-            if reminder
-            else ""
+            f" <span class='keyword-reminder'>({reminder_text.format(args=args)})</span>" if reminder else ""
         )
         return f"{display_text}{reminder_text}"
 
