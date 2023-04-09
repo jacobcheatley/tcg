@@ -1,4 +1,5 @@
 # Process will be basically
+import functools
 import re
 from abc import ABC, abstractmethod
 from typing import Any
@@ -41,33 +42,45 @@ class RegexReplacePipeline(AbstractPipeline):
         return data
 
 
+MANA_NAMES = {"D": "divine", "A": "arcane", "O": "occult", "P": "primal", "L": "alchemy"}
+MANA_KEYS = "".join(MANA_NAMES)
+MANA_PATTERN = re.compile(r"\((?P<value>[\d]{1,2})(?P<first>[" + MANA_KEYS + "])(?P<second>[" + MANA_KEYS + "]?)\)")
+
+
+def mana_information(match: re.Match) -> dict[str, Any]:
+    groupdict = match.groupdict()
+    result = {
+        "value": groupdict["value"],
+        "first": MANA_NAMES.get(groupdict["first"]),
+        "second": MANA_NAMES.get(groupdict["second"]),
+    }
+    result["namelist"] = [result["first"]] + ([result["second"]] if result["second"] else [])
+    result["names"] = " ".join(result["namelist"])
+    return result
+
+
 class ManaCostEnrichmentPipeline(AbstractPipeline):
-    def __init__(self) -> None:
-        self.mana_names = {"D": "divine", "A": "arcane", "O": "occult", "P": "primal", "L": "alchemy"}
-        self.mana_keys = "".join(self.mana_names.keys())
-        self.pattern = re.compile(
-            r"\((?P<value>[\d]{1,2})(?P<first>[" + self.mana_keys + "])(?P<second>[" + self.mana_keys + "]?)\)"
-        )
-
-    def _convert(self, symbol: str):
-        return self.mana_names.get(symbol)
-
     def __call__(self, data: PipelineData) -> PipelineData:
-        groupdict = self.pattern.match(data["card__cost"]).groupdict()
-        data["cost__value"] = groupdict["value"]
-        data["cost__first"] = self._convert(groupdict["first"])
-        data["cost__second"] = self._convert(groupdict["second"])
-        data["cost__namelist"] = [data["cost__first"]] + ([data["cost__second"]] if data["cost__second"] else [])
-        data["cost__names"] = " ".join(data["cost__namelist"])
+        match = MANA_PATTERN.match(data["card__cost"])
+        info = mana_information(match)
+        return data | {**PipelineHelpers.prefix("cost__", info)}
+
+
+class ManaCostReplacePipeline(AbstractPipeline):
+    def __call__(self, data: PipelineData) -> PipelineData:
+        def _repl(match: re.Match):
+            info = mana_information(match)
+            return f"<span class='mana {info['names']}'>{info['value']}</span>"
+
+        data["card__text"] = MANA_PATTERN.sub(_repl, data["card__text"])
+        data["card__cost"] = MANA_PATTERN.sub(_repl, data["card__cost"])
         return data
 
 
-class PrefixPipeline(AbstractPipeline):
-    def __init__(self, prefix) -> None:
-        self.prefix = prefix
-
-    def __call__(self, data: PipelineData) -> PipelineData:
-        return {f"{self.prefix}{k}": v for k, v in data.items()}
+class PipelineHelpers:
+    @staticmethod
+    def prefix(prefix: str, data: PipelineData) -> PipelineData:
+        return {f"{prefix}{k}": v for k, v in data.items()}
 
 
 class KeywordReplacePipeline(AbstractPipeline):
@@ -91,8 +104,7 @@ class KeywordReplacePipeline(AbstractPipeline):
                 format_context = {**data, **args}
                 return format_string.format_map(format_context)
 
-        new_text = self.pattern.sub(_repl, data["card__text"])
-        data["card__text"] = new_text
+        data["card__text"] = self.pattern.sub(_repl, data["card__text"])
         return data
 
 
@@ -102,7 +114,7 @@ class FormatPipeline(AbstractPipeline):
         return data
 
 
-enrich_pipeline = ConcatPipeline([PrefixPipeline("card__"), ManaCostEnrichmentPipeline()])
+enrich_pipeline = ConcatPipeline([lambda card: PipelineHelpers.prefix("card__", card), ManaCostEnrichmentPipeline()])
 to_pseudo_pipeline = ConcatPipeline([enrich_pipeline, KeywordReplacePipeline(KEYWORDS)])
 to_html_pipeline = ConcatPipeline(
     [
@@ -115,9 +127,13 @@ to_html_pipeline = ConcatPipeline(
         RegexReplacePipeline(")r", ")</span>"),
         RegexReplacePipeline("k(", "<span class='keyword-name'>"),
         RegexReplacePipeline(")k", ")</span>"),
-        RegexReplacePipeline("l(", "<ul class=''>"),
-        RegexReplacePipeline(")l", "</ul>"),
+        RegexReplacePipeline(
+            re.compile("l\((?P<args>.*)\)l"),
+            lambda match: f"""<ul class='list'>{''.join([f"<li>{line.strip()}</li>" for line in match.groupdict()['args'].split(',')])}</ul>""",
+        ),
+        RegexReplacePipeline("", ""),
         RegexReplacePipeline("|", "<br>"),
+        ManaCostReplacePipeline(),
     ]
 )
 to_formatted_pipeline = ConcatPipeline([to_html_pipeline, RegexReplacePipeline("~", "{card__name}"), FormatPipeline()])
@@ -126,10 +142,10 @@ print(
     to_formatted_pipeline(
         {
             "name": "A custom name",
-            "text": "k.blocker(), kr.complicated(some args, ignore these though)",
+            "text": "k.blocker(), kr.complicated((2DA))|<<pay (2DA)>> Choose one: l(one, two, three)l",
             "cost": "(2DA)",
             "tags": "Beast Human AnotherTag",
             "power": 3,
         }
-    )
+    )["card__text"].replace("<br>", "\n")
 )
