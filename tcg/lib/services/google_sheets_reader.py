@@ -7,4 +7,6 @@ class GoogleSheetsReader:
         self._url_format = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={{sheet_name}}"
 
     def read(self, sheet_name: str) -> pd.DataFrame:
-        return pd.read_csv(self._url_format.format(sheet_name=sheet_name))
+        return pd.read_csv(
+            self._url_format.format(sheet_name=sheet_name), header=0, false_values=[""], keep_default_na=False
+        )

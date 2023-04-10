@@ -1,0 +1,36 @@
+@import 'colors.scss';
+
+@mixin color_bg {
+    $mana-class-names: ('divine' 'arcane' 'occult' 'primal' 'alchemy');
+    $mana-colors: ($color-divine $color-arcane $color-occult $color-primal $color-alchemy);
+
+    @for $i from 1 through length($mana-class-names) {
+        $name-i: nth($mana-class-names, $i);
+        $color-i: nth($mana-colors, $i);
+        @for $j from $i through length($mana-class-names) {
+            @if ($i != $j) {
+                $name-j: nth($mana-class-names, $j);
+                $color-j: nth($mana-colors, $j);
+                &.#{$name-i}.#{$name-j} {
+                    background: linear-gradient(to right, $color-i, $color-i 46%, $color-j 54%, $color-j);
+                }
+            } @else {
+                &.#{$name-i} {
+                    background: $color-i;
+                }
+            }
+        }
+    }
+}
+
+@mixin stroke($color: #000, $size: 0.01em) {
+    text-shadow:
+      -#{$size} -#{$size} 0 $color,
+       0        -#{$size} 0 $color,
+       #{$size} -#{$size} 0 $color,
+       #{$size}  0        0 $color,
+       #{$size}  #{$size} 0 $color,
+       0         #{$size} 0 $color,
+      -#{$size}  #{$size} 0 $color,
+      -#{$size}  0        0 $color;
+}

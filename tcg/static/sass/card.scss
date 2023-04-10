@@ -1,17 +1,28 @@
 @import 'imports/colors.scss';
-@import 'imports/fonts.scss';
+@import 'imports/mixins.scss';
 
 // Card Dimensions
 $card-width: 63mm;
 $card-height: 88mm;
 $card-border-color: $color-black;
-$card-border-radius: 2mm;
-$card-frame-inset: 1.5mm;
+
 
 // Standard measures
-$font-size-smaller: 2.5mm;
-$font-size: 4mm;
-$font-size-larger: 7mm;
+$card-border-radius: 2mm;
+$card-frame-inset: 1.25mm;
+$card-main-box-inset-top: 1.5mm;
+$card-main-box-inset-right: 2mm;
+$card-main-box-inset-bottom: 3.5mm;
+$card-main-box-inset-left: 2mm;
+
+$font-size-tags: 2.5mm;
+$font-size-text: 3.5mm;
+$font-size-name: 4mm;
+$font-size-cost: 7mm;
+
+$card-small-pad: 0.5mm;
+
+$font-default: sans-serif;
 
 .card {
     width: $card-width;
@@ -20,75 +31,11 @@ $font-size-larger: 7mm;
     background-color: $card-border-color;
     box-sizing: border-box;
     position: relative;
-    font-size: $font-size;
-    font-family: sans-serif;
+    font-family: $font-default;
 }
 
-@mixin color_bg {
-    $mana-class-names: ('divine' 'arcane' 'occult' 'primal' 'alchemy');
-    $mana-colors: ($color-divine $color-arcane $color-occult $color-primal $color-alchemy);
-
-    @for $i from 1 through length($mana-class-names) {
-        $name-i: nth($mana-class-names, $i);
-        $color-i: nth($mana-colors, $i);
-        @for $j from $i through length($mana-class-names) {
-            @if ($i != $j) {
-                $name-j: nth($mana-class-names, $j);
-                $color-j: nth($mana-colors, $j);
-                &.#{$name-i}.#{$name-j} {
-                    background: linear-gradient(90deg, $color-i, $color-j);
-                }
-            } @else {
-                &.#{$name-i} {
-                    background: linear-gradient(90deg, $color-i, $color-i);
-                }
-            }
-        }
-    }
-}
-
-@mixin color_mana_icon {
-    $mana-class-names: ('divine' 'arcane' 'occult' 'primal' 'alchemy');
-    $mana-colors: ($color-divine $color-arcane $color-occult $color-primal $color-alchemy);
-    // $mana-svg: ("/static/svg/mana/divine.svg" "/static/svg/mana/arcane.svg" "/static/svg/mana/occult.svg" "/static/svg/mana/primal.svg" "/static/svg/mana/alchemy.svg");
-
-    @for $i from 1 through length($mana-class-names) {
-        $name-i: nth($mana-class-names, $i);
-        $color-i: nth($mana-colors, $i);
-        @for $j from $i through length($mana-class-names) {
-            @if ($i != $j) {
-                $name-j: nth($mana-class-names, $j);
-                $color-j: nth($mana-colors, $j);
-                &.#{$name-i}.#{$name-j} {
-                    background: url("/static/svg/mana/#{$name-i}.svg");
-                    &::after {
-                        background: url("/static/svg/mana/#{$name-j}.svg");
-                        clip-path: inset(0 0 0 50%);
-                    }
-                }
-            } @else {
-                &.#{$name-i} {
-                    background: url("/static/svg/mana/#{$name-i}.svg");
-                }
-            }
-        }
-    }
-}
-
-@mixin stroke($color: #000, $size: 1px) {
-    text-shadow:
-      -#{$size} -#{$size} 0 $color,
-       0        -#{$size} 0 $color,
-       #{$size} -#{$size} 0 $color,
-       #{$size}  0        0 $color,
-       #{$size}  #{$size} 0 $color,
-       0         #{$size} 0 $color,
-      -#{$size}  #{$size} 0 $color,
-      -#{$size}  0        0 $color;
-}
 
 .card-frame {
-    background-color: white;
     position: absolute;
     left: $card-frame-inset;
     right: $card-frame-inset;
@@ -103,47 +50,26 @@ $font-size-larger: 7mm;
     display: inline-block;
     border-radius: 50%;
     text-align: center;
-    vertical-align: middle;
-    color: white;
-    // padding: 5px;
-    position: relative;
-    // border: 1px solid black;
-    // z-index: 10;
-    width: $font-size;
-    height: $font-size;
-    line-height: $font-size;
-    font-size: $font-size;
+    color: $color-mana-value;
+    width: 1em;
+    height: 1em;
+    aspect-ratio: 1 / 1;
+    // font-size: $font-size-text;
     vertical-align: text-top;
+    font-style: normal !important;
+    font-weight: bold;
+    border: 0.05em solid $color-mana-value;
+    box-sizing: border-box;
+    @include color_bg();
 }
 
 .cost-box .mana, .channel-box .mana {
-    width: $font-size-larger;
-    height: $font-size-larger;
-    line-height: $font-size-larger;
-    font-size: $font-size-larger;
-}
-
-.mana-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    @include color_mana_icon();
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-size: contain;
-    }
+    font-size: $font-size-cost;
 }
 
 .mana-value {
-    position: relative;
+    vertical-align: top;
+    line-height: 1em;
     @include stroke();
 }
 
@@ -158,24 +84,30 @@ $font-size-larger: 7mm;
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: $font-size-larger / 2;
-    margin: 1.5mm 2.5mm;
+    top: $card-main-box-inset-top;
+    left: $card-main-box-inset-left;
+    right: $card-main-box-inset-right;
+    bottom: $card-main-box-inset-bottom;
 }
 
 .top-box {
     text-align: center;
-    margin-bottom: 1mm;
+    background-color: $color-text-background;
+    padding: $card-small-pad;
 }
 
 .cost-box {
     position: absolute;
+    top: $card-main-box-inset-top;
+    left: $card-main-box-inset-left;
+}
+
+.name-box {
+    font-size: $font-size-name;
 }
 
 .tag-box {
-    font-size: $font-size-smaller;
+    font-size: $font-size-tags;
 }
 
 .art-box {
@@ -184,8 +116,8 @@ $font-size-larger: 7mm;
 }
 
 .text-box {
-    line-height: $font-size;
-    background-color: rgba(255, 255, 255, 0.75);
+    font-size: $font-size-text;
+    background-color: $color-text-background;
     flex-grow: 1;
     padding: 1mm;
 }
@@ -197,7 +129,7 @@ $font-size-larger: 7mm;
     bottom: 0;
     left: 0;
     padding: 0 2.5mm;
-    font-size: $font-size-larger;
+    font-size: $font-size-cost;
 
     @include stroke();
 }
@@ -213,7 +145,7 @@ $font-size-larger: 7mm;
 
 .ability-trigger {
     background-color: rgb(102, 181, 255);
-    padding: 0 1.5mm 0 2.5mm;
+    // padding: 0 1.5mm 0 2.5mm;
     // clip-path: polygon(2mm 50%, 0 0, calc(100% - 2mm) 0, 100% 50%, calc(100% - 2mm) 100%, 0 100%);
 
     &::after {
@@ -222,10 +154,10 @@ $font-size-larger: 7mm;
 }
 .ability-activation-cost {
     background-color: rgb(102, 255, 140);
-    padding: 0 1.5mm 0 2.5mm;
-    clip-path: polygon(2mm 50%, 0 0, calc(100% - 2mm) 0, 100% 50%, calc(100% - 2mm) 100%, 0 100%);
+    // padding: 0 1.5mm 0 2.5mm;
+    // clip-path: polygon(2mm 50%, 0 0, calc(100% - 2mm) 0, 100% 50%, calc(100% - 2mm) 100%, 0 100%);
 
     &::after {
-        content: "►";
+        content: " ►";
     }
 }

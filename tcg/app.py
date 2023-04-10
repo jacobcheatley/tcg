@@ -9,10 +9,14 @@ def card_data():
     sheet_reader = GoogleSheetsReader("1qmsOTAWI75Hs6wtkR6oK58nxVS0uEjHigd1mwyo7714")
     keywords_df = sheet_reader.read("keywords")
     keyword_definitions = KeywordDefinition.list_from_dataframe(keywords_df)
-    cards = sheet_reader.read("cards").to_dict(orient="records")
+    cards = sheet_reader.read("cards")
+    print(cards)
+    card_data = cards.to_dict(orient="records")
     pipeline = CardPipeline(keyword_definitions=keyword_definitions)
 
-    return pipeline.run_multiple(cards)
+    print(card_data)
+
+    return pipeline.run_multiple(card_data)
 
 
 app = Flask(__name__)

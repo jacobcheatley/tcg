@@ -62,6 +62,7 @@ def mana_information(match: re.Match) -> dict[str, Any]:
 
 class ManaCostEnrichmentPipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
+        print(data)
         match = MANA_PATTERN.match(data["card__cost"])
         info = mana_information(match)
         return data | {**PipelineHelpers.prefix("cost__", info)}
@@ -70,7 +71,7 @@ class ManaCostEnrichmentPipeline(AbstractPipeline):
 class ManaCostReplacePipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
         def _mana_element(names: str, value: str):
-            return f"<span class='mana {names}'><span class='mana-background {names}'></span><span class='mana-value'>{value}</span></span>"
+            return f"<span class='mana {names}'><span class='mana-value'>{value}</span></span>"
 
         def _repl(match: re.Match):
             info = mana_information(match)
@@ -92,8 +93,7 @@ class PipelineHelpers:
 
 class KeywordReplacePipeline(AbstractPipeline):
     def __init__(self, keyword_definitions: list[KeywordDefinition]) -> None:
-        self.pattern = re.compile(r"k(?P<reminder>r?)\.(?P<name>[a-z]+)\((?P<args>[^\)]*)\)")
-        # print(keyword_definitions, type(keyword_definitions))
+        self.pattern = re.compile(r"\(k(?P<reminder>r?)\.(?P<name>[^\s\/]+)\s?(?P<args>.*)\/\)")
         self.keyword_definitions: dict[str, KeywordDefinition] = {
             definition.name: definition for definition in keyword_definitions
         }
@@ -122,22 +122,29 @@ class FormatPipeline(AbstractPipeline):
         return data
 
 
+class AutoReminderPipeline(AbstractPipeline):
+    def __call__(self, data: PipelineData) -> PipelineData:
+        if data["cost__second"] is not None:
+            data["card__text"] = f"r(This channels tapped.)r|{data['card__text']}"
+        return data
+
+
 class CardPipeline(AbstractPipeline):
     def __init__(self, *, keyword_definitions: list[KeywordDefinition]) -> None:
         self.enrich_pipeline = ConcatPipeline(
             [lambda card: PipelineHelpers.prefix("card__", card), ManaCostEnrichmentPipeline()]
         )
-        self.to_pseudo_pipeline = ConcatPipeline([KeywordReplacePipeline(keyword_definitions)])
+        self.to_pseudo_pipeline = ConcatPipeline([KeywordReplacePipeline(keyword_definitions), AutoReminderPipeline()])
         self.to_html_pipeline = ConcatPipeline(
             [
                 RegexReplacePipeline("<<", "<span class='ability-activation-cost'>"),
                 RegexReplacePipeline(">>", "</span>"),
                 RegexReplacePipeline("[[", "<span class='ability-trigger'>"),
                 RegexReplacePipeline("]]", "</span>"),
-                RegexReplacePipeline("r(", "<span class='reminder-text'>("),
+                RegexReplacePipeline("r(", "<span class='keyword-reminder'>("),
                 RegexReplacePipeline(")r", ")</span>"),
-                RegexReplacePipeline("k(", "<span class='keyword-name'>"),
-                RegexReplacePipeline(")k", ")</span>"),
+                RegexReplacePipeline("k(", "<span class='keyword-display'>"),
+                RegexReplacePipeline(")k", "</span>"),
                 RegexReplacePipeline(
                     re.compile("l\((?P<args>.*)\)l"),
                     lambda match: f"""<ul class='list'>{''.join([f"<li>{line.strip()}</li>" for line in match.groupdict()['args'].split(',')])}</ul>""",
