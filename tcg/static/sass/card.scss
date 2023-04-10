@@ -19,6 +19,7 @@ $font-size-tags: 2.5mm;
 $font-size-text: 3.5mm;
 $font-size-name: 4mm;
 $font-size-cost: 7mm;
+$font-size-power: 6mm;
 
 $card-small-pad: 0.5mm;
 
@@ -98,8 +99,13 @@ $font-default: sans-serif;
 
 .cost-box {
     position: absolute;
-    top: $card-main-box-inset-top;
-    left: $card-main-box-inset-left;
+    top: 0;
+    left: 0;
+    padding-right: 0.05em;
+    font-size: $font-size-cost;
+    // clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.2em), calc(100% - 0.2em) 100%, 0 100%);
+    border-bottom-right-radius: 50%;
+    @include color_bg_first();
 }
 
 .name-box {
@@ -113,10 +119,22 @@ $font-default: sans-serif;
 .art-box {
     aspect-ratio: 4 / 3;
     background-color: white;
+    position: relative;
 }
 
 .type-box {
     font-size: $font-size-text;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding-left: $card-small-pad;
+    padding-right: 1.1em;
+    height: 1.1em;
+    color: $color-mana-value;
+    clip-path: polygon(0 0, calc(100% - 1.1em) 0, 100% 100%, 0 100%);
+    
+    @include color_bg();
+    @include stroke();
 }
 
 .text-box {
@@ -129,12 +147,22 @@ $font-default: sans-serif;
 .power-box {
     color: white;
     // background-color: black;
+    // background-color: $color-arcane;
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 0 2.5mm;
-    font-size: $font-size-cost;
+    padding: $card-small-pad;
+    padding-left: 0.5em;
+    padding-right: 1.1em;
+    clip-path: polygon(0 0, calc(100% - 1.1em) 0, 100% 100%, 0 100%);
+    height: 1.1em;
+    font-size: $font-size-power;
 
+    &:empty {
+        display: none;
+    }
+
+    @include color_bg_first();
     @include stroke();
 }
 

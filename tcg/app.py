@@ -10,12 +10,9 @@ def card_data():
     keywords_df = sheet_reader.read("keywords")
     keyword_definitions = KeywordDefinition.list_from_dataframe(keywords_df)
     cards = sheet_reader.read("cards")
-    print(cards)
     card_data = cards.to_dict(orient="records")
     pipeline = CardPipeline(keyword_definitions=keyword_definitions)
-
     print(card_data)
-
     return pipeline.run_multiple(card_data)
 
 

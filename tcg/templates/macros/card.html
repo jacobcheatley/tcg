@@ -5,18 +5,14 @@
                 <div class="top-box">
                     <div class="name-box">{{ data['card__name'] | safe }}</div>
                     <div class="tag-box">{{ data['card__tags'] | safe }}</div>
+                    <div class="cost-box {{ data['cost__names'] }}">{{ data['card__cost'] | safe }}</div>
                 </div>
                 <div class="art-box">
+                    <div class="type-box {{ data['cost__names'] }}">{{ data['card__typeline'] }}</div>
                 </div>
-                <div class="type-box">
-                    {{ data['card__typeline'] }}
-                </div>
-                <div class="text-box">
-                    {{ data['card__text'] | safe }}
-                </div>
+                <div class="text-box">{{ data['card__text'] | safe }}</div>
             </div>
-            <div class="cost-box">{{ data['card__cost'] | safe }}</div>
-            <div class="power-box">{{ data['card__power'] }}</div>
+            <div class="power-box {{ data['cost__names'] }}">{{ data['card__power'] }}</div>
             <div class="channel-box">{{ data['card__channel_cost'] | safe }}</div>
         </div>
     </div>
