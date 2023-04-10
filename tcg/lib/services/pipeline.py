@@ -129,10 +129,26 @@ class AutoReminderPipeline(AbstractPipeline):
         return data
 
 
+class TypelineEnrichmentPipeline(AbstractPipeline):
+    def __call__(self, data: PipelineData) -> PipelineData:
+        card_type = data["card__type"]
+        card_quick = "quick" if data["card__quick"] else ""
+        card_leader = "leader" if data["card__leader"] else ""
+        card_typelist: list[str] = [x for x in [card_quick, card_leader, card_type] if x]
+        data["card__typelist"] = card_typelist
+        data["card__typenames"] = " ".join(card_typelist)
+        data["card__typeline"] = " ".join([typeline_name.capitalize() for typeline_name in card_typelist])
+        return data
+
+
 class CardPipeline(AbstractPipeline):
     def __init__(self, *, keyword_definitions: list[KeywordDefinition]) -> None:
         self.enrich_pipeline = ConcatPipeline(
-            [lambda card: PipelineHelpers.prefix("card__", card), ManaCostEnrichmentPipeline()]
+            [
+                lambda card: PipelineHelpers.prefix("card__", card),
+                ManaCostEnrichmentPipeline(),
+                TypelineEnrichmentPipeline(),
+            ]
         )
         self.to_pseudo_pipeline = ConcatPipeline([KeywordReplacePipeline(keyword_definitions), AutoReminderPipeline()])
         self.to_html_pipeline = ConcatPipeline(

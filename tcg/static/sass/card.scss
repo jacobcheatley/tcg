@@ -115,6 +115,10 @@ $font-default: sans-serif;
     background-color: white;
 }
 
+.type-box {
+    font-size: $font-size-text;
+}
+
 .text-box {
     font-size: $font-size-text;
     background-color: $color-text-background;
