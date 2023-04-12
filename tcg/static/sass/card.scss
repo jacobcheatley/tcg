@@ -193,3 +193,17 @@ $font-default: sans-serif;
         content: " ►";
     }
 }
+
+br {
+    // margin-bottom: 0.2em;
+    display: block;
+    content: "";
+    margin-top: 0.3em;
+}
+
+li {
+    margin-left: 0.3em;
+    &::before {
+        content: "- ";
+    }
+}
