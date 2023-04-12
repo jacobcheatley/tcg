@@ -62,7 +62,6 @@ def mana_information(match: re.Match) -> dict[str, Any]:
 
 class ManaCostEnrichmentPipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
-        print(data)
         match = MANA_PATTERN.match(data["card__cost"])
         info = mana_information(match)
         return data | {**PipelineHelpers.prefix("cost__", info)}

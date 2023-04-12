@@ -12,7 +12,6 @@ def card_data():
     cards = sheet_reader.read("cards")
     card_data = cards.to_dict(orient="records")
     pipeline = CardPipeline(keyword_definitions=keyword_definitions)
-    print(card_data)
     return pipeline.run_multiple(card_data)
 
 
