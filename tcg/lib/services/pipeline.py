@@ -93,7 +93,7 @@ class PipelineHelpers:
 
 class KeywordReplacePipeline(AbstractPipeline):
     def __init__(self, keyword_definitions: list[KeywordDefinition]) -> None:
-        self.pattern = re.compile(r"\(k(?P<reminder>r?)\.(?P<name>[^\s\/]+)\s?(?P<args>.*)\/\)")
+        self.pattern = re.compile(r"\(k(?P<reminder>r?)\.(?P<name>[^\s\/]+)\s?(?P<args>[^\/]*)\/\)")
         self.keyword_definitions: dict[str, KeywordDefinition] = {
             definition.name: definition for definition in keyword_definitions
         }
