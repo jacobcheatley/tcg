@@ -96,7 +96,7 @@ class ManaCostHTMLExtension:
         Color.DIVINE: "#f5de0c",
         Color.ARCANE: "#3232e4",
         Color.OCCULT: "#2e2e2e",
-        Color.PRIMAL: "#bb3606",
+        Color.PRIMAL: "#f56600",
         Color.ALCHEMY: "#9e2e9e",
     }
 

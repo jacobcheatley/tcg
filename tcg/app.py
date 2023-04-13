@@ -12,7 +12,7 @@ def card_data():
     cards = sheet_reader.read("cards")
     card_data = cards.to_dict(orient="records")
     pipeline = CardPipeline(keyword_definitions=keyword_definitions)
-    return pipeline.run_multiple(card_data)
+    return [card for card in pipeline.run_multiple(card_data) if not card["card__name"].startswith("-")]
 
 
 app = Flask(__name__)
