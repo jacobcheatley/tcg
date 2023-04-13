@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 from typing import Any
 
-from tcg.lib.types import KeywordDefinition
+from tcg.lib.types import Color, KeywordDefinition, ManaCostHTMLExtension, ManaCostInfo
 
 PipelineData = dict[str, str]
 
@@ -43,44 +43,29 @@ class RegexReplacePipeline(AbstractPipeline):
         return data
 
 
-MANA_NAMES = {"D": "divine", "A": "arcane", "O": "occult", "P": "primal", "L": "alchemy"}
-MANA_KEYS = "".join(MANA_NAMES)
-MANA_PATTERN = re.compile(r"\((?P<value>[\d]{1,2})(?P<first>[" + MANA_KEYS + "])(?P<second>[" + MANA_KEYS + "]?)\)")
-
-
-def mana_information(match: re.Match) -> dict[str, Any]:
-    groupdict = match.groupdict()
-    result = {
-        "value": groupdict["value"],
-        "first": MANA_NAMES.get(groupdict["first"]),
-        "second": MANA_NAMES.get(groupdict["second"]),
-    }
-    result["namelist"] = [result["first"]] + ([result["second"]] if result["second"] else [])
-    result["names"] = " ".join(result["namelist"])
-    return result
-
-
 class ManaCostEnrichmentPipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
-        match = MANA_PATTERN.match(data["card__cost"])
-        info = mana_information(match)
-        return data | {**PipelineHelpers.prefix("cost__", info)}
+        info = ManaCostInfo.from_string(data["card__cost"])
+        html_extension = ManaCostHTMLExtension(info)
+        return data | {
+            "card__cost": html_extension.element,
+            "card__channel_cost": html_extension.channel_element,
+            "cost__info": info,
+            "cost__first_color": html_extension.color_first,
+            "cost__gradient": html_extension.gradient,
+        }
 
 
 class ManaCostReplacePipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
         def _mana_element(names: str, value: str):
-            return f"<span class='mana {names}'><span class='mana-value'>{value}</span></span>"
+            return
 
         def _repl(match: re.Match):
-            info = mana_information(match)
-            return _mana_element(info["names"], info["value"])
+            info = ManaCostInfo.from_regex_match(match)
+            return ManaCostHTMLExtension(info).element
 
-        data["card__text"] = MANA_PATTERN.sub(_repl, data["card__text"])
-        card_cost_match = MANA_PATTERN.match(data["card__cost"])
-        card_cost_info = mana_information(card_cost_match)
-        data["card__cost"] = _mana_element(card_cost_info["names"], card_cost_info["value"])
-        data["card__channel_cost"] = _mana_element(card_cost_info["names"], "1")
+        data["card__text"] = ManaCostInfo.REGEX_PATTERN.sub(_repl, data["card__text"])
         return data
 
 
@@ -123,7 +108,7 @@ class FormatPipeline(AbstractPipeline):
 
 class AutoReminderPipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
-        if data["cost__second"] is not None:
+        if len(data["cost__info"].color) > 1:
             data["card__text"] = f"r(This channels tapped.)r|{data['card__text']}"
         return data
 

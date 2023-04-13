@@ -1,18 +1,20 @@
 {% macro card(data) -%}
     <div class="card">
-        <div class="card-frame {{ data['cost__names'] }} {{ data['card__typenames'] }}">
+        <div class="card-frame {{ data['card__typenames'] }}" style="background: {{ data['cost__gradient'] }}">
             <div class="main-box">
                 <div class="top-box">
-                    <div class="name-box">{{ data['card__name'] | safe }}</div>
-                    <div class="tag-box">{{ data['card__tags'] | safe }}</div>
-                    <div class="cost-box {{ data['cost__names'] }}">{{ data['card__cost'] | safe }}</div>
+                    <div class="cost-box" style="background: {{ data['cost__first_color'] }}">{{ data['card__cost'] | safe }}</div>
+                    <div class="title-box">
+                        <div class="name-box">{{ data['card__name'] | safe }}</div>
+                        <div class="tag-box">{{ data['card__tags'] | safe }}</div>
+                    </div>
                 </div>
                 <div class="art-box">
-                    <div class="type-box {{ data['cost__names'] }}">{{ data['card__typeline'] }}</div>
+                    <div class="type-box" style="background: {{ data['cost__gradient'] }}">{{ data['card__typeline'] }}</div>
                 </div>
                 <div class="text-box">{{ data['card__text'] | safe }}</div>
             </div>
-            <div class="power-box {{ data['cost__names'] }}">{{ data['card__power'] }}</div>
+            <div class="power-box">{{ data['card__power'] }}</div>
             <div class="channel-box">{{ data['card__channel_cost'] | safe }}</div>
         </div>
     </div>
