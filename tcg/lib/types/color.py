@@ -20,10 +20,14 @@ class Color(Flag):
 
     @property
     def as_ordered_string(self) -> str:
+        if self.value == 0:
+            return "C"
         return self.ordering_string[self]
 
     @property
     def as_ordered_enum(self) -> tuple[Self]:
+        if self.value == 0:
+            return (self,)
         return self.ordering_enums[self]
 
     @property
@@ -32,6 +36,7 @@ class Color(Flag):
 
 
 Color.shortcuts = {
+    "C": Color(0),
     "D": Color.DIVINE,
     "A": Color.ARCANE,
     "O": Color.OCCULT,
@@ -39,6 +44,7 @@ Color.shortcuts = {
     "L": Color.ALCHEMY,
 }
 Color.names = {
+    Color(0): "none",
     Color.DIVINE: "divine",
     Color.ARCANE: "arcane",
     Color.OCCULT: "occult",
@@ -97,6 +103,7 @@ class ManaCostInfo:
 class ManaCostHTMLExtension:
     # TODO: Load from a config or something
     COLOR_VALUES = {
+        Color(0): "#adadad",
         Color.DIVINE: "#f5de0c",
         Color.ARCANE: "#3232e4",
         Color.OCCULT: "#2e2e2e",
