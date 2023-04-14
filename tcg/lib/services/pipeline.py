@@ -51,6 +51,7 @@ class ManaCostEnrichmentPipeline(AbstractPipeline):
             "card__cost": html_extension.element,
             "card__channel_cost": html_extension.channel_element,
             "cost__info": info,
+            "cost__colors": info.color.as_name_list,
             "cost__first_color": html_extension.color_first,
             "cost__gradient": html_extension.gradient,
         }
@@ -58,9 +59,6 @@ class ManaCostEnrichmentPipeline(AbstractPipeline):
 
 class ManaCostReplacePipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
-        def _mana_element(names: str, value: str):
-            return
-
         def _repl(match: re.Match):
             info = ManaCostInfo.from_regex_match(match)
             return ManaCostHTMLExtension(info).element

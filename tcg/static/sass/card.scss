@@ -46,15 +46,44 @@ $card-small-pad: 0.5mm;
     border-radius: $card-frame-inset;
 }
 
-.card-frame-overlay {
-    background-image: url("/static/images/0011.jpg");
+.card-frame-texture-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: 0.1;
-    -webkit-filter: grayscale(100%);
+
+    $gradient-bleed: 2%;
+    @for $n-colors from 2 through 5 {
+        $fraction-per: 100 / $n-colors;
+        @for $nth-color-element from 2 through $n-colors {
+            $nth-to-last: ($n-colors - $nth-color-element + 1);
+            $start-percent: 100% - $fraction-per * ($nth-color-element - 1) - $gradient-bleed;
+            $end-percent: 100% - $fraction-per * ($nth-color-element - 1) + $gradient-bleed;
+            // @debug "n-colors #{$n-colors}";
+            // @debug "fraction-per: #{$fraction-per}";
+            // @debug "nth-color-element: #{$nth-color-element}";
+            // @debug "nth-to-last: #{$nth-to-last}";
+            // @debug "start-percent: #{$start-percent}";
+            // @debug "end-percent: #{$end-percent}";
+            // @debug "-";
+
+            // https://stackoverflow.com/a/12198561
+            .card-frame-texture:nth-child(#{$nth-color-element}):nth-last-child(#{$nth-to-last}) {
+                -webkit-mask-image: linear-gradient(to left, white $start-percent, transparent $end-percent);
+            }
+        }
+        @debug "---";
+    }
+}
+
+.card-frame-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: 100%;
 }
 
 .mana {
@@ -80,13 +109,11 @@ $card-small-pad: 0.5mm;
 
 .cost-box .mana, .channel-box .mana {
     font-size: $font-size-cost;
-    vertical-align: text-top;
 }
 
 
 .main-box {
-    // display: flex;
-    // flex-direction: column;
+    position: absolute;
     margin-top: $card-main-box-inset-top;
     margin-left: $card-main-box-inset-left;
     margin-right: $card-main-box-inset-right;
@@ -101,15 +128,15 @@ $card-small-pad: 0.5mm;
 
 .top-box {
     background-color: $color-text-background;
+    border-radius: ($card-small-pad * 3) ($card-small-pad * 3) 0 0;
     display: flex;
     flex-direction: row;
+    padding: $card-small-pad 0;
 }
 
 .cost-box {
     font-size: $font-size-cost;
-    border-bottom-right-radius: 50%;
-    // padding-bottom: $card-small-pad;
-    padding-right: $card-small-pad;
+    margin: 0 $card-small-pad;
 }
 
 .title-box {
@@ -166,6 +193,7 @@ $card-small-pad: 0.5mm;
 .text-box {
     font-size: $font-size-text;
     background-color: $color-text-background;
+    border-radius: 0 0 ($card-small-pad * 3) ($card-small-pad * 3);
     // line-height: 1.2em;
     box-sizing: border-box;
     padding: 1mm;

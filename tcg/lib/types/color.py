@@ -26,6 +26,10 @@ class Color(Flag):
     def as_ordered_enum(self) -> tuple[Self]:
         return self.ordering_enums[self]
 
+    @property
+    def as_name_list(self) -> list[str]:
+        return [self.names[color] for color in self.as_ordered_enum]
+
 
 Color.shortcuts = {
     "D": Color.DIVINE,
