@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template
 from sassutils.wsgi import Manifest, SassMiddleware
 
@@ -6,7 +8,10 @@ from tcg.lib.types import KeywordDefinition
 
 
 def card_data():
-    sheet_reader = GoogleSheetsReader("1qmsOTAWI75Hs6wtkR6oK58nxVS0uEjHigd1mwyo7714")
+    # TODO: Abstract to a class or two
+    with open("credentials.json") as f:
+        credentials = json.load(f)
+    sheet_reader = GoogleSheetsReader(credentials["google_sheets_id"])
     keywords_df = sheet_reader.read("keywords")
     keyword_definitions = KeywordDefinition.list_from_dataframe(keywords_df)
     cards = sheet_reader.read("cards")
