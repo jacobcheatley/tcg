@@ -112,6 +112,15 @@ class AutoReminderPipeline(AbstractPipeline):
 
 
 class TypelineEnrichmentPipeline(AbstractPipeline):
+    DISPLAY_MAP = {
+        "quick": "⚡Quick",
+        "leader": "👑Leader",
+        "creature": "Creature",
+        "magic": "Magic",
+        "item": "Item",
+        "attachment": "Attachment",
+    }
+
     def __call__(self, data: PipelineData) -> PipelineData:
         card_type = data["card__type"]
         card_quick = "quick" if data["card__quick"] else ""
@@ -119,7 +128,7 @@ class TypelineEnrichmentPipeline(AbstractPipeline):
         card_typelist: list[str] = [x for x in [card_quick, card_leader, card_type] if x]
         data["card__typelist"] = card_typelist
         data["card__typenames"] = " ".join(card_typelist)
-        data["card__typeline"] = " ".join([typeline_name.capitalize() for typeline_name in card_typelist])
+        data["card__typeline"] = " ".join([self.DISPLAY_MAP[typeline_name] for typeline_name in card_typelist])
         return data
 
 
