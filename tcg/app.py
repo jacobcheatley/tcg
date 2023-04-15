@@ -14,7 +14,7 @@ def card_data():
     sheet_reader = GoogleSheetsReader(credentials["google_sheets_id"])
     keywords_df = sheet_reader.read("keywords")
     keyword_definitions = KeywordDefinition.list_from_dataframe(keywords_df)
-    cards = sheet_reader.read("cards")
+    cards = sheet_reader.read("cards", dtype={"leader": bool})
     card_data = cards.to_dict(orient="records")
     pipeline = CardPipeline(keyword_definitions=keyword_definitions)
     return [card for card in pipeline.run_multiple(card_data) if not card["card__name"].startswith("-")]
