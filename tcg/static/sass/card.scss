@@ -8,14 +8,17 @@ $card-height: 88mm;
 $card-border-color: $color-black;
 
 // Standard measures
+$card-small-pad: 0.5mm;
+
 $card-border-radius: 2mm;
 $card-frame-inset: 1.25mm;
+
 $card-main-box-inset-top: 1mm;
-$card-main-box-inset-right: 2mm;
-$card-main-box-inset-bottom: 3.5mm;
-$card-main-box-inset-left: 2mm;
-$card-main-box-width: ($card-width - $card-frame-inset * 2 - $card-main-box-inset-left - $card-main-box-inset-right);
-$card-main-box-height: ($card-height - $card-frame-inset * 2 - $card-main-box-inset-top - $card-main-box-inset-bottom);
+$card-main-box-inset-right: 1.5mm;
+$card-main-box-inset-bottom: 4mm;
+$card-main-box-inset-left: 1.5mm;
+$card-main-box-border-radius: 2mm;
+$color-border-overlay: rgba(0, 0, 0, 0.5);
 
 $font-size-tags: 2.5mm;
 $font-size-text: 3.5mm;
@@ -23,7 +26,16 @@ $font-size-name: 4mm;
 $font-size-cost: 6mm;
 $font-size-power: 6mm;
 
-$card-small-pad: 0.5mm;
+$main-box-outer-shadow: 0 0 0.5mm 0.25mm $color-black;
+$text-inner-shadow: inset 0 0 0.5mm $color-black;
+
+// Derived
+$card-main-box-width: ($card-width - $card-frame-inset * 2 - $card-main-box-inset-left - $card-main-box-inset-right);
+$card-main-box-height: ($card-height - $card-frame-inset * 2 - $card-main-box-inset-top - $card-main-box-inset-bottom);
+
+$top-box-height: $font-size-name + $font-size-tags + $card-small-pad * 2;
+$art-box-height: ($card-main-box-width * 3 / 4);
+$text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
 
 
 .card {
@@ -43,7 +55,6 @@ $card-small-pad: 0.5mm;
     right: $card-frame-inset;
     top: $card-frame-inset;
     bottom: $card-frame-inset;
-    border-radius: $card-frame-inset;
 }
 
 .card-frame-texture-container {
@@ -73,7 +84,6 @@ $card-small-pad: 0.5mm;
                 -webkit-mask-image: linear-gradient(to left, white $start-percent, transparent $end-percent);
             }
         }
-        @debug "---";
     }
 }
 
@@ -84,6 +94,7 @@ $card-small-pad: 0.5mm;
     right: 0;
     bottom: 0;
     background-size: 100%;
+    border-radius: $card-frame-inset;
 }
 
 .mana {
@@ -120,6 +131,11 @@ $card-small-pad: 0.5mm;
     margin-bottom: $card-main-box-inset-bottom;
     width: $card-main-box-width;
     height: $card-main-box-height;
+    border-radius: $card-main-box-border-radius;
+    background-color: $color-text-background;
+    box-sizing: border-box;
+    background-clip: padding-box;
+    box-shadow: $main-box-outer-shadow;
 
     &>* {
         width: 100%;
@@ -127,11 +143,14 @@ $card-small-pad: 0.5mm;
 }
 
 .top-box {
-    background-color: $color-text-background;
-    border-radius: ($card-small-pad * 3) ($card-small-pad * 3) 0 0;
+    border-radius: $card-main-box-border-radius $card-main-box-border-radius 0 0;
     display: flex;
     flex-direction: row;
     padding: $card-small-pad 0;
+    box-shadow: $text-inner-shadow;
+    height: $top-box-height;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .cost-box {
@@ -158,9 +177,8 @@ $card-small-pad: 0.5mm;
 }
 
 .art-box {
-    // aspect-ratio: 4 / 3;
-    height: ($card-main-box-width * 3 / 4);
-    min-height: ($card-main-box-width * 3 / 4);
+    height: $art-box-height;
+    box-sizing: border-box;
     margin: auto;
     background-color: white;
     position: relative;
@@ -192,13 +210,11 @@ $card-small-pad: 0.5mm;
 
 .text-box {
     font-size: $font-size-text;
-    background-color: $color-text-background;
-    border-radius: 0 0 ($card-small-pad * 3) ($card-small-pad * 3);
-    // line-height: 1.2em;
+    border-radius: 0 0 $card-main-box-border-radius $card-main-box-border-radius;
     box-sizing: border-box;
-    padding: 1mm;
-    height: 30mm;
-
+    padding: $card-small-pad * 2;
+    height: $text-box-height;
+    box-shadow: $text-inner-shadow;
 }
 
 .flavor-text {
@@ -209,8 +225,8 @@ $card-small-pad: 0.5mm;
 }
 
 .power-box {
-    color: white;
-    background-color: black;
+    color: $color-white;
+    background-color: $color-black;
     position: absolute;
     bottom: 0;
     padding: 0 ($card-small-pad * 3);
