@@ -18,7 +18,6 @@ $card-main-box-inset-right: 1.5mm;
 $card-main-box-inset-bottom: 4mm;
 $card-main-box-inset-left: 1.5mm;
 $card-main-box-border-radius: 2mm;
-$color-border-overlay: rgba(0, 0, 0, 0.5);
 
 $font-size-tags: 2.5mm;
 $font-size-text: 3.5mm;
@@ -27,7 +26,7 @@ $font-size-cost: 6mm;
 $font-size-power: 6mm;
 
 $main-box-outer-shadow: 0 0 0.5mm 0.25mm $color-black;
-$text-inner-shadow: inset 0 0 0.5mm $color-black;
+$text-inner-shadow: inset 0 0 1mm $color-black;
 
 // Derived
 $card-main-box-width: ($card-width - $card-frame-inset * 2 - $card-main-box-inset-left - $card-main-box-inset-right);
@@ -259,17 +258,21 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
 }
 
 .ability-trigger {
-    background-color: rgba(102, 255, 140, 0.75);
+    background-image: linear-gradient(to bottom, transparent, transparent 30%, $color-ability-trigger 85%, transparent 85%);
+    font-weight: 500;
 
     &::after {
         content: ":";
     }
 }
 .ability-activation-cost {
-    background-color: rgba(102, 181, 255, 0.75);
+    background-image: linear-gradient(to bottom, transparent, transparent 30%, $color-ability-activation-cost 85%, transparent 85%);
+    font-weight: 500;
 
     &::after {
-        content: "►";
+        // content: "►";
+        // content: "→";
+        content: " ⇒";
     }
 }
 
