@@ -91,6 +91,8 @@ class ManaCostInfo:
 
     @classmethod
     def from_string(cls, string: str) -> Self:
+        if not string:
+            string = "(0C)"
         match = cls.REGEX_PATTERN.match(string)
         return cls.from_regex_match(match)
 
