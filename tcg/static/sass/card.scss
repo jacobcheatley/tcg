@@ -198,6 +198,14 @@ $card-small-pad: 0.5mm;
     box-sizing: border-box;
     padding: 1mm;
     height: 30mm;
+
+}
+
+.flavor-text {
+    display: block;
+    bottom: 0;
+    margin-top: ($card-small-pad * 3);
+    font-style: italic;
 }
 
 .power-box {

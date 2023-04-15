@@ -18,7 +18,7 @@
                     <img class="art" src="{{ data['card__image_url'] }}">
                     <div class="type-box" style="background: {{ data['cost__gradient'] }}">{{ data['card__typeline'] }}</div>
                 </div>
-                <div class="text-box">{{ data['card__text'] | safe }}</div>
+                <div class="text-box"><span class="text">{{ data['card__text'] | safe }}</span>{% if data['card__flavor_text'] | length %}<br><span class="flavor-text">{{ data['card__flavor_text'] }}</span>{% endif %}</div>
             </div>
             <div class="power-box">{{ data['card__power'] }}</div>
             <div class="channel-box">{{ data['card__channel_cost'] | safe }}</div>
