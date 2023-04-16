@@ -67,6 +67,11 @@ class ManaCostReplacePipeline(AbstractPipeline):
         return data
 
 
+class SymbolReplacePipeline(AbstractPipeline):
+    def __call__(self, data: PipelineData) -> PipelineData:
+        return super().__call__(data)
+
+
 class PipelineHelpers:
     @staticmethod
     def prefix(prefix: str, data: PipelineData) -> PipelineData:
@@ -107,7 +112,7 @@ class FormatPipeline(AbstractPipeline):
 class AutoReminderPipeline(AbstractPipeline):
     def __call__(self, data: PipelineData) -> PipelineData:
         if len(data["cost__info"].color) > 1:
-            data["card__text"] = f"r(This channels tapped.)r|{data['card__text']}"
+            data["card__text"] = f"r(This channels exhausted.)r|{data['card__text']}"
         return data
 
 
@@ -159,6 +164,7 @@ class CardPipeline(AbstractPipeline):
                 RegexReplacePipeline("", ""),
                 RegexReplacePipeline("|", "<br>"),
                 ManaCostReplacePipeline(),
+                SymbolReplacePipeline(),
             ]
         )
         self.to_formatted_pipeline = ConcatPipeline([RegexReplacePipeline("~", "{card__name}"), FormatPipeline()])
