@@ -19,14 +19,15 @@ $card-main-box-inset-bottom: 4mm;
 $card-main-box-inset-left: 1.5mm;
 $card-main-box-border-radius: 2mm;
 
-$font-size-tags: 2.5mm;
-$font-size-text: 3.5mm;
-$font-size-name: 4mm;
 $font-size-cost: 6mm;
+$font-size-name: 4mm;
+$font-size-tags: 2.5mm;
+$font-size-type: 2.5mm;
+$font-size-text: 3.5mm;
 $font-size-power: 6mm;
 
 $main-box-outer-shadow: 0 0 0.5mm 0.25mm $color-black;
-$text-inner-shadow: inset 0 0 1mm $color-black;
+$text-inner-shadow: inset 0 0 2mm $color-black;
 
 // Derived
 $card-main-box-width: ($card-width - $card-frame-inset * 2 - $card-main-box-inset-left - $card-main-box-inset-right);
@@ -100,7 +101,6 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
     display: inline-block;
     border-radius: 50%;
     text-align: center;
-    color: $color-mana-value;
     width: 1em;
     height: 1em;
     aspect-ratio: 1 / 1;
@@ -115,6 +115,7 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
     line-height: 1em;
     font-size: 0.95em;
     font-family: $font-display;
+    color: $color-mana-value;
 }
 
 .cost-box .mana, .channel-box .mana {
@@ -189,7 +190,7 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
 }
 
 .type-box {
-    font-size: $font-size-text;
+    font-size: $font-size-type;
     position: absolute;
     text-align: center;
     left: 50%;
@@ -197,6 +198,7 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
     padding: 0 ($card-small-pad * 3);
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
+    // border-radius: 0.5em;
     height: 1.1em;
     color: $color-black;
     font-family: $font-display;
@@ -237,8 +239,6 @@ $text-box-height: $card-main-box-height - $top-box-height - $art-box-height;
     &:empty {
         display: none;
     }
-
-    @include stroke();
 }
 
 .channel-box {
